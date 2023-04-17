@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { onRunEnded, onRunStarted, runScript, stopAllScripts } from './source-runner/extension'
 
-const header = `> Play this document as a notebook with the ziffers vscode extension: https://github.com/amiika/ziffers-vscode-sonic-pi`
+const header = `> Ziffers\n`
 
 export const serializer: vscode.NotebookSerializer = {
 	serializeNotebook: (book: vscode.NotebookData) =>
