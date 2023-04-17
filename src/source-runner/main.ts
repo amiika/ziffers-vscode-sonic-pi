@@ -214,7 +214,7 @@ export class Main {
 					if (item) {
 						void vscode.commands.executeCommand(
 							'workbench.action.openSettings',
-							'vscode-sonic-pi.sonicPiRootDirectory',
+							'ziffers-vscode-sonic-pi.sonicPiRootDirectory',
 						)
 					}
 				})
@@ -532,6 +532,13 @@ export class Main {
 	runCode(code: string, offset: number = 0) {
 		// The offset represents the line number of the selection, so we can apply it when we just send a
 		// selection to Sonic Pi. If we send the full buffer, then this is 0.
+
+		// Hack for ziffers notation
+		const regexp = /\"|live_loop|play|stop|stop_thread|zkill|zstop/
+		if (!regexp.test(code)) {
+			code = 'ziffers "' + code + '"'
+		}
+
 		this.runOffset = offset
 		if (this.config.logClearOnRun()) {
 			this.logOutput.clear()
@@ -570,6 +577,9 @@ export class Main {
 	stopAllJobs() {
 		let message = new OSC.Message('/stop-all-jobs', this.guiUuid)
 		this.sendOsc(message)
+
+		let kill_message = new OSC.Message('/run-code', parseInt(this.guiUuid), 'zkill')
+		this.sendOsc(kill_message)
 	}
 
 	startRecording() {

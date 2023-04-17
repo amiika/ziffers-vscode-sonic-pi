@@ -41,7 +41,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.function.built-in.sonic-pi",
-					"match": "\\b(play|sleep|sample|use_synth|cue|sync|control)\\b"
+					"match": "\\b(play|zplay|sleep|sample|use_synth|cue|sync|control)\\b"
 				},
 				{
 					"name": "support.function.sonic-pi",

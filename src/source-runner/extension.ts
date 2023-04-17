@@ -73,11 +73,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the editor commands. For now, run, stop and recording. Those should be enough for
 	// some initial fun...
-	let disposable = vscode.commands.registerCommand('vscode-sonic-pi.startserver', () => {
+	let disposable = vscode.commands.registerCommand('ziffers-vscode-sonic-pi.startserver', () => {
 		main.startServer()
 	})
 
-	disposable = vscode.commands.registerTextEditorCommand('vscode-sonic-pi.run', (textEditor) => {
+	disposable = vscode.commands.registerTextEditorCommand('ziffers-vscode-sonic-pi.run', (textEditor) => {
 		let doc = textEditor.document
 		// If the focus is on something that is not ruby (i.e. something on the output pane),
 		// run the first found open ruby editor instead
@@ -98,66 +98,69 @@ export function activate(context: vscode.ExtensionContext) {
 		main.runCode(code)
 	})
 
-	disposable = vscode.commands.registerTextEditorCommand('vscode-sonic-pi.runselected', (textEditor) => {
-		let doc = textEditor.document
-		// If the focus is on something that is not ruby (i.e. something on the output pane),
-		// run the first found open ruby editor instead
-		if (doc.languageId !== 'sonic-pi') {
-			let textEditors = vscode.window.visibleTextEditors
-			let rubyEditors = textEditors.filter((editor) => {
-				return editor.document.languageId === 'sonic-pi'
-			})
+	disposable = vscode.commands.registerTextEditorCommand(
+		'ziffers-vscode-sonic-pi.runselected',
+		(textEditor) => {
+			let doc = textEditor.document
+			// If the focus is on something that is not ruby (i.e. something on the output pane),
+			// run the first found open ruby editor instead
+			if (doc.languageId !== 'sonic-pi') {
+				let textEditors = vscode.window.visibleTextEditors
+				let rubyEditors = textEditors.filter((editor) => {
+					return editor.document.languageId === 'sonic-pi'
+				})
 
-			// TODO: if no ruby editors, show a warning to indicate that this will not have effect
-			if (!rubyEditors.length) {
-				return
+				// TODO: if no ruby editors, show a warning to indicate that this will not have effect
+				if (!rubyEditors.length) {
+					return
+				}
+				doc = rubyEditors[0].document
 			}
-			doc = rubyEditors[0].document
-		}
-		let code = doc.getText(textEditor.selection)
-		if (!code) {
-			let runFileWhenRunSelectedIsEmpty = config.runFileWhenRunSelectedIsEmpty()
-			if (!runFileWhenRunSelectedIsEmpty) {
-				void vscode.window
-					.showWarningMessage(
-						'You tried to Run selected code with no code selected.' +
-							'Do you want to run the whole file when this happens?',
-						'Yes, once',
-						'Yes, always',
-						'No, never',
-					)
-					.then((item) => {
-						if (item === 'Yes, once') {
-							code = doc.getText()
-							main.flashCode(textEditor, true)
-							main.runCode(code)
-						} else if (item === 'Yes, always') {
-							config.updateRunFileWhenRunSelectedIsEmpty('always')
-							code = doc.getText()
-							main.flashCode(textEditor, true)
-							main.runCode(code)
-						} else if (item === 'No, never') {
-							config.updateRunFileWhenRunSelectedIsEmpty('never')
-						}
-					})
-				return
-			} else if (runFileWhenRunSelectedIsEmpty === 'never') {
-				return
-			} else if (runFileWhenRunSelectedIsEmpty === 'always') {
-				code = doc.getText()
-				main.flashCode(textEditor, true)
-				main.runCode(code)
+			let code = doc.getText(textEditor.selection)
+			if (!code) {
+				let runFileWhenRunSelectedIsEmpty = config.runFileWhenRunSelectedIsEmpty()
+				if (!runFileWhenRunSelectedIsEmpty) {
+					void vscode.window
+						.showWarningMessage(
+							'You tried to Run selected code with no code selected.' +
+								'Do you want to run the whole file when this happens?',
+							'Yes, once',
+							'Yes, always',
+							'No, never',
+						)
+						.then((item) => {
+							if (item === 'Yes, once') {
+								code = doc.getText()
+								main.flashCode(textEditor, true)
+								main.runCode(code)
+							} else if (item === 'Yes, always') {
+								config.updateRunFileWhenRunSelectedIsEmpty('always')
+								code = doc.getText()
+								main.flashCode(textEditor, true)
+								main.runCode(code)
+							} else if (item === 'No, never') {
+								config.updateRunFileWhenRunSelectedIsEmpty('never')
+							}
+						})
+					return
+				} else if (runFileWhenRunSelectedIsEmpty === 'never') {
+					return
+				} else if (runFileWhenRunSelectedIsEmpty === 'always') {
+					code = doc.getText()
+					main.flashCode(textEditor, true)
+					main.runCode(code)
+				}
 			}
-		}
-		main.flashCode(textEditor, false)
-		main.runCode(code, textEditor.selection.start.line)
-	})
+			main.flashCode(textEditor, false)
+			main.runCode(code, textEditor.selection.start.line)
+		},
+	)
 
-	disposable = vscode.commands.registerCommand('vscode-sonic-pi.stop', () => {
+	disposable = vscode.commands.registerCommand('ziffers-vscode-sonic-pi.stop', () => {
 		main.stopAllJobs()
 	})
 
-	disposable = vscode.commands.registerCommand('vscode-sonic-pi.togglerecording', () => {
+	disposable = vscode.commands.registerCommand('ziffers-vscode-sonic-pi.togglerecording', () => {
 		isRecording = !isRecording
 		if (isRecording) {
 			main.startRecording()

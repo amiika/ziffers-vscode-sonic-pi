@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { onRunEnded, onRunStarted, runScript, stopAllScripts } from './source-runner/extension'
 
-const header = `> Play this document as a notebook with the [Sonic Pi Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=jakearl.vscode-sonic-pi\n`
+const header = `> Play this document as a notebook with the [Ziffers & Sonic Pi extension for VS Code](https://marketplace.visualstudio.com/items?itemName=amiika.vscode-ziffers\n`
 
 export const serializer: vscode.NotebookSerializer = {
 	serializeNotebook: (book: vscode.NotebookData) =>
@@ -22,13 +22,7 @@ export const serializer: vscode.NotebookSerializer = {
 			return new vscode.NotebookData([
 				new vscode.NotebookCellData(
 					vscode.NotebookCellKind.Code,
-					`# Pentatonic Bleeps (from https://sonic-pi.net/)
-with_fx :reverb, mix: 0.2 do
-	live_loop :play do
-		play scale(:Eb2, :major_pentatonic, num_octaves: 3).choose, release: 0.1, amp: rand
-		sleep 0.1
-	end
-end`,
+					`# Write Ziffers or Sonic Pi code`,
 					'sonic-pi',
 				),
 			])
@@ -102,9 +96,6 @@ const getKey = (thing: vscode.NotebookCell | vscode.NotebookDocument) =>
 export class NotebookController {
 	private workingCopies = new Map<string, NotebookWorkingCopy>()
 	private controller: vscode.NotebookController
-
-	private pendingCancellations = new Set<Promise<void>>()
-
 	private pendingExecutions: (() => void)[] = []
 	private sentExecutions: Map<number, () => void> = new Map()
 
@@ -217,16 +208,12 @@ export class NotebookController {
 		workingCopy.executionHistory.set(getKey(cell), cellWorkingCopy)
 
 		execution.token.onCancellationRequested(async () => {
-			// TODO.. with this endExecution call, the execution end too early (the loop hasn't finished yet),
-			// without it the execution ends too late (lots of time between the music stopping and the completion event)
-			endExecution(cellWorkingCopy, 'cancellation requested')
-			const cancellation = this.runScript(silenceScript(scriptAsRun), true)
-			workingCopy.executionHistory.delete(getKey(cell))
-			this.pendingCancellations.add(cancellation)
-			await cancellation
-			this.pendingCancellations.delete(cancellation)
-		})
+			endExecution(cellWorkingCopy, 'stopping')
 
+			await this.runScript(silenceScript(scriptAsRun))
+
+			workingCopy.executionHistory.delete(getKey(cell))
+		})
 		return cellWorkingCopy
 	}
 
@@ -243,19 +230,16 @@ export class NotebookController {
 			.filter((x): x is string => x !== undefined)
 			.join('\n')
 
+		workingCopy.executionHistory.clear()
 		await this.runScript(scriptToPlay)
 	}
 
-	private runID = 0
-	private async runScript(script: string, isCancellation = false): Promise<void> {
-		const id = this.runID++
-		if (!isCancellation) await Promise.all(this.pendingCancellations.values())
+	private runScript(script: string): Promise<void> {
 		return new Promise((c) => {
-			console.log('Running script', id, ':', script)
-
+			let hasResolved = false
 			const resolve = () => {
-				c()
-				console.log('Finished running script', id)
+				if (!hasResolved) c()
+				hasResolved = true
 			}
 			this.pendingExecutions.push(resolve)
 			runScript(script)
@@ -264,11 +248,22 @@ export class NotebookController {
 }
 
 const silenceScript = (script: string): string => {
-	const loops = /live_loop.*?do\n/g
-	let loop: RegExpExecArray | null
+	const regexp = /live_loop :([a-zA-Z0-9_]+) do/g
+	const loops = script.match(regexp)
 	let stops = ''
-	while ((loop = loops.exec(script))) {
-		stops += loop[0] + 'stop\nend\n'
+	console.log(loops)
+	if (loops) {
+		for (const loop of loops) {
+			stops += 'stop_thread ' + '"' + loop + '"' + '\n'
+		}
 	}
+	const zregexp = /z[0-9]+/g
+	const zloops = script.match(zregexp)
+	if (zloops) {
+		for (const loop of zloops) {
+			stops += 'stop_thread ' + '"' + loop + '"' + '\n'
+		}
+	}
+	console.log(stops)
 	return stops
 }

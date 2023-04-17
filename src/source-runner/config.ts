@@ -23,10 +23,10 @@ import * as vscode from 'vscode'
 
 export class Config {
 	private getConfiguration = vscode.workspace.getConfiguration
-	private section: string = 'vscode-sonic-pi'
+	private section: string = 'ziffers-vscode-sonic-pi'
 	private rubySection: string = 'ruby.interpreter'
 
-	// sonic-pi's config
+	// ziffers's config
 	public flashBackgroundColor(): string {
 		return this.getConfiguration(this.section).flashBackgroundColor
 	}

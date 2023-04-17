@@ -11,7 +11,7 @@
 		"activityBar.background": "#97f178",
 		"activityBar.foreground": "#15202b",
 		"activityBar.inactiveForeground": "#15202b99",
-		"activityBarBadge.background": "#6f90f0",
+		"activityBarBadge.background": "#7c7c7c",
 		"activityBarBadge.foreground": "#15202b",
 		"commandCenter.border": "#15202b99",
 		"sash.hoverBorder": "#97f178",
@@ -29,4 +29,10 @@
 		"titleBar.inactiveForeground": "#15202b99"
 	},
 	"peacock.color": "#74ec4a",
+	"notebook.toolbar.enabled": true,
+	"notebook.toolbar.commands": [
+    "notebook.execute",
+    "notebook.cancelExecution"
+]
+
 }

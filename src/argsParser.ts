@@ -28,12 +28,26 @@ export const getValidArgumentsAtPosition = (
 		}
 	}
 
-	const line = document.lineAt(position.line).text
-	if (
-		(!line.includes(',') || line.indexOf(',') > position.character) &&
-		(!line.includes('|') || line.indexOf('|') > position.character)
-	) {
+	let line = document.lineAt(position.line).text
+
+	// This was here. Not sure why: && (!line.includes('|') || line.indexOf('|') > position.character)
+
+	if (!line.includes(',') || line.indexOf(',') > position.character) {
 		return []
+	}
+
+	// Match last synth / with_fx ... only
+	let re = /(synth|with_fx|sample|control)/g
+	let match
+	let lastIdx = -1
+
+	while ((match = re.exec(line)) !== null) {
+		lastIdx = match.index
+	}
+
+	if (lastIdx !== -1) {
+		// Get last synth, sample or with_fx
+		line = line.substring(lastIdx)
 	}
 
 	let args:
@@ -44,9 +58,12 @@ export const getValidArgumentsAtPosition = (
 				can_slide?: boolean | undefined
 		  }[]
 		| undefined = undefined
+
 	let command = line.replace(/^.*=/, '')
-	switch (command.match(/\s*(\w+)\s/)?.[1]) {
-		case 'play': {
+
+	// Match for both "synth :piano" and "synth: :piano"
+	switch (command.match(/\s*(\w+)\s*:?/)?.[1]) {
+		case 'synth': {
 			const synthID = lookUp(synths.map((synth) => synth.id))
 			if (synthID) {
 				args = synths.find((synth) => synth.id === synthID)?.options

@@ -1,10 +1,14 @@
 > Play this document as a notebook with the [Sonic Pi Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=jakearl.vscode-sonic-pi
 
+> Play this document as a notebook with the [Sonic Pi Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=jakearl.vscode-sonic-pi
+
 
 
 > The content in this file is copyright Sam Aaron with all rights reserved and is included in this branch for dempnstration purposes only. License available at https://github.com/sonic-pi-net/sonic-pi/blob/main/LICENSE.md
 
+
 # Welcome to Sonic Pi
+
 
 ## Welcome friend :-)
 
@@ -38,12 +42,14 @@ drop by, say hi and ask me lots of questions :-)
 
 OK, let's get started...
 
+
 ## Live Coding
 
 One of the most exciting aspects of Sonic Pi is that it enables you to
 write and *modify code live* to make music, just like you might perform
 live with a guitar. This means that given some practice you can take
 Sonic Pi on stage and gig with it.
+
 
 ### Free your mind
 
@@ -52,16 +58,19 @@ this tutorial, I'd like to give you an experience of what it's like to
 live code. Don't worry if you don't understand much (or any) of
 this. Just try to hold onto your seats and enjoy...
 
+
 ### A live loop
 
 Let's get started, consider the following cell:
 
+
 ```
 live_loop :flibble do
-  sample :bd_haus, rate: 1
-  sleep 0.5
-end
+    sample :bd_haus, rate: 1
+    sleep 0.5
+  end
 ```
+
 
 Now, press the `Run` button and you'll hear a nice fast bass drum
 beating away. If at any time you wish to stop the sound just hit the
@@ -98,6 +107,7 @@ beginning:
 ```
 live_loop :flibble do
   sample :ambi_choir, rate: 0.3
+
 #  sample :bd_haus, rate: 1
   sleep 1
 end
@@ -132,6 +142,7 @@ live_loop :guit do
   with_fx :echo, mix: 0.3, phase: 0.25 do
     sample :guit_em9, rate: 0.5
   end
+
 #  sample :guit_em9, rate: -0.5
   sleep 8
 end
@@ -150,12 +161,14 @@ with this. You're now ready to read the rest of the tutorial.
 
 So what are you waiting for...
 
+
 ## Learning through Play
 
 Sonic Pi encourages you to learn about both computing and music through
 play and experimentation. The most important thing is that you're having
 fun, and before you know it you'll have accidentally learned how to
 code, compose and perform.
+
 
 ### There are no mistakes
 
@@ -170,6 +183,7 @@ it. However, it might sound totally jarring and out of place. It doesn't
 matter that it happened - what matters is what you do next with it. Take
 the sound, manipulate it and morph it into something awesome. The crowd
 will go *wild*.
+
 
 ### Start Simple
 

@@ -5,6 +5,7 @@ import {
 	FxCompletionItemProvider,
 	SampleCompletionItemProvider,
 	SynthCompletionItemProvider,
+	ScaleCompletionItemProvider,
 } from './completionItems'
 import { HoverProvider } from './HoverProvider'
 import { serializer, NotebookController } from './notebook'
@@ -16,14 +17,14 @@ export function activate(context: vscode.ExtensionContext) {
 	activate_runner(context)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.checkInstall', () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.checkInstall', () => {
 			void vscode.commands.executeCommand('setContext', 'sonicPiInstalled', true)
 			void vscode.window.showInformationMessage('All Good!')
 		}),
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.openExamples', () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.openExamples', () => {
 			void vscode.commands.executeCommand(
 				'vscode.openFolder',
 				vscode.Uri.joinPath(context.extensionUri, 'examples'),
@@ -32,11 +33,11 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.openTutorial', () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.openTutorial', () => {
 			void vscode.commands.executeCommand(
 				'vscode.openWith',
 				vscode.Uri.joinPath(context.extensionUri, 'tutorial', '1_Welcome to Sonic Pi.pibook'),
-				'sonic-pi-book',
+				'ziffers-book',
 			)
 		}),
 	)
@@ -54,6 +55,11 @@ export function activate(context: vscode.ExtensionContext) {
 		),
 		vscode.languages.registerCompletionItemProvider(
 			selector,
+			new ScaleCompletionItemProvider(),
+			...ScaleCompletionItemProvider.triggerCharacters,
+		),
+		vscode.languages.registerCompletionItemProvider(
+			selector,
 			new FxCompletionItemProvider(),
 			...FxCompletionItemProvider.triggerCharacters,
 		),
@@ -64,19 +70,15 @@ export function activate(context: vscode.ExtensionContext) {
 		),
 		vscode.languages.registerHoverProvider(selector, new HoverProvider()),
 		vscode.languages.registerCompletionItemProvider(selector, new CommandCompletionItemProvider()),
-		vscode.workspace.registerNotebookSerializer('sonic-pi-book', serializer, { transientOutputs: true }),
+		vscode.workspace.registerNotebookSerializer('ziffers-book', serializer, { transientOutputs: true }),
 	)
 
-	const notebookController = new NotebookController(
-		'sonic-pi-book-kernel',
-		'sonic-pi-book',
-		'Sonic Pi Player',
-	)
+	const notebookController = new NotebookController('ziffers-book-kernel', 'ziffers-book', 'Ziffers Player')
 
 	context.subscriptions.push(notebookController)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.runCell', async () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.runCell', async () => {
 			const cellUri = vscode.window.activeTextEditor?.document.uri
 			if (cellUri) {
 				void notebookController.playCellFromURI(cellUri.toString())
@@ -85,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.stopNotebook', async () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.stopNotebook', async () => {
 			const cellUri = vscode.window.activeTextEditor?.document.uri
 			if (cellUri) {
 				notebookController.stopNotebook(cellUri.toString())
@@ -94,9 +96,9 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('vscode-sonic-pi.newNotebook', async () => {
+		vscode.commands.registerCommand('ziffers-vscode-sonic-pi.newNotebook', async () => {
 			await vscode.commands.executeCommand('workbench.action.files.newUntitledFile', {
-				viewType: 'sonic-pi-book',
+				viewType: 'ziffers-book',
 			})
 		}),
 	)

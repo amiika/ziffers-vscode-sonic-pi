@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import { getValidArgumentsAtPosition } from './argsParser'
-import { samples, synths, fx, commands } from './builtins/builtins'
+import { samples, synths, fx, commands, scales } from './builtins/builtins'
 
 export class CommandCompletionItemProvider implements vscode.CompletionItemProvider {
 	provideCompletionItems(
@@ -19,7 +19,7 @@ export class CommandCompletionItemProvider implements vscode.CompletionItemProvi
 }
 
 export class SampleCompletionItemProvider implements vscode.CompletionItemProvider {
-	static triggerCharacters = [':']
+	static triggerCharacters = [' ']
 
 	provideCompletionItems(
 		document: vscode.TextDocument,
@@ -27,16 +27,14 @@ export class SampleCompletionItemProvider implements vscode.CompletionItemProvid
 		token: vscode.CancellationToken,
 		context: vscode.CompletionContext,
 	): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>> {
-		if (!document.lineAt(position.line).text.includes('sample')) {
-			return []
-		}
 		const line = document.lineAt(position.line).text
-		if (line.includes(',') && line.indexOf(',') < position.character) {
+		const last = line.split(',').pop() as string
+		if (!(/sample/.test(last) || /sample:/.test(last) || /[A-Z]:/.test(last))) {
 			return []
 		}
 		return samples.map((sample) => ({
 			label: sample.id,
-			insertText: sample.id,
+			insertText: ':' + sample.id,
 			detail: sample.name,
 			documentation: sample.detail,
 		}))
@@ -44,7 +42,7 @@ export class SampleCompletionItemProvider implements vscode.CompletionItemProvid
 }
 
 export class SynthCompletionItemProvider implements vscode.CompletionItemProvider {
-	static triggerCharacters = [':']
+	static triggerCharacters = [' ']
 
 	provideCompletionItems(
 		document: vscode.TextDocument,
@@ -52,24 +50,22 @@ export class SynthCompletionItemProvider implements vscode.CompletionItemProvide
 		token: vscode.CancellationToken,
 		context: vscode.CompletionContext,
 	): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>> {
-		if (!document.lineAt(position.line).text.includes('synth')) {
-			return []
-		}
 		const line = document.lineAt(position.line).text
-		if (line.includes(',') && line.indexOf(',') < position.character) {
+		const last = line.split(',').pop() as string
+		if (!(/synth/.test(last) || /synth:/.test(last))) {
 			return []
 		}
 		return synths.map((synth) => ({
 			label: synth.id,
-			insertText: synth.id,
+			insertText: ':' + synth.id,
 			detail: synth.name,
 			documentation: synth.detail,
 		}))
 	}
 }
 
-export class FxCompletionItemProvider implements vscode.CompletionItemProvider {
-	static triggerCharacters = [':']
+export class ScaleCompletionItemProvider implements vscode.CompletionItemProvider {
+	static triggerCharacters = [' ']
 
 	provideCompletionItems(
 		document: vscode.TextDocument,
@@ -77,18 +73,37 @@ export class FxCompletionItemProvider implements vscode.CompletionItemProvider {
 		token: vscode.CancellationToken,
 		context: vscode.CompletionContext,
 	): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>> {
-		if (!document.lineAt(position.line).text.includes('with_fx')) {
-			return []
-		}
-
 		const line = document.lineAt(position.line).text
-		if (line.includes(',') && line.indexOf(',') < position.character) {
+		const last = line.split(',').pop() as string
+		if (!(/scale/.test(last) || /scale:/.test(last))) {
 			return []
 		}
+		return scales.map((scale) => ({
+			label: scale.id,
+			insertText: ':' + scale.id,
+			detail: scale.name,
+			documentation: scale.detail,
+		}))
+	}
+}
 
+export class FxCompletionItemProvider implements vscode.CompletionItemProvider {
+	static triggerCharacters = [' ']
+
+	provideCompletionItems(
+		document: vscode.TextDocument,
+		position: vscode.Position,
+		token: vscode.CancellationToken,
+		context: vscode.CompletionContext,
+	): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>> {
+		const line = document.lineAt(position.line).text
+		const last = line.split(',').pop() as string
+		if (!(/with_fx/.test(last) || /with_fx:/.test(last))) {
+			return []
+		}
 		return fx.map((fx) => ({
 			label: fx.id,
-			insertText: fx.id,
+			insertText: ':' + fx.id,
 			detail: fx.name,
 			documentation: fx.detail,
 		}))
@@ -96,7 +111,7 @@ export class FxCompletionItemProvider implements vscode.CompletionItemProvider {
 }
 
 export class ArgumentsCompletionItemProvider implements vscode.CompletionItemProvider {
-	static triggerCharacters = []
+	static triggerCharacters = [' ']
 
 	provideCompletionItems(
 		document: vscode.TextDocument,

@@ -1,6 +1,9 @@
 > Play this document as a notebook with the [Sonic Pi Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=jakearl.vscode-sonic-pi
 
+> Play this document as a notebook with the [Sonic Pi Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=jakearl.vscode-sonic-pi
+
 > The content in this file is copyright Sam Aaron with all rights reserved and is included in this branch for dempnstration purposes only. License available at https://github.com/sonic-pi-net/sonic-pi/blob/main/LICENSE.md
+
 
 # Synths
 
@@ -18,6 +21,13 @@ can get very deep into very sophisticated sound manipulation if that's
 your thing. Hold on to your hats...
 
 
+
+```
+play 70
+```
+```
+play 80
+```
 ## Your First Beeps
 
 Take a look at the following code:
@@ -29,6 +39,7 @@ play 70
 This is where it all starts. Go ahead, copy and paste it into the code
 window at the top of the app (the big white space under the Run
 button). Now, press Run...
+
 
 ### Beep!
 
@@ -59,6 +70,7 @@ It turns out that the C of the 4th octave (C in English notation) is identified 
 first started. All that matters right now is that you know that *low
 numbers make lower beeps* and *high numbers make higher beeps*.
 
+
 ### Chords
 
 Playing a note is quite fun, but playing many at the same time can be
@@ -73,6 +85,7 @@ play 79
 Jazzy! So, when you write multiple `play`s, they all play at the same
 time. Try it for yourself - which numbers sound good together? Which
 sound terrible? Experiment, explore and find out for yourself.
+
 
 ### Melody
 
@@ -110,6 +123,7 @@ There's absolutely no need to stick to standard whole notes. Play
 around and have fun.
 
 
+
 ### Traditional Note Names
 
 For those of you that already know some musical notation (don't worry if
@@ -143,6 +157,7 @@ If you want to make a note sharp, add an `s` after the note name such as
 Now go *crazy* and have fun making your own tunes.
 
 
+
 ## Synth Options: Amp and Pan
 
 As well as allowing you to control which note to play or which sample to
@@ -151,6 +166,7 @@ control the sounds. We'll be covering many of these in this tutorial and
 there's extensive documentation for each in the help system. However,
 for now we'll introduce two of the most useful: *amplitude* and *pan*.
 First, let's look at what options actually are.
+
 
 
 ### Options
@@ -204,6 +220,7 @@ Many things in Sonic Pi accept opts, so just spend a little time
 learning how to use them and you'll be set! Let's play with our first
 opt: `amp:`.
 
+
 ### Amplitude
 
 Amplitude is a computer representation of the loudness of a sound. A
@@ -217,6 +234,7 @@ high, Sonic Pi uses what's called a compressor to squash them all to
 make sure things aren't too loud for your ears. This can often make the
 sound muddy and strange. So try to use low amplitudes, i.e. in the range
 0 to 0.5 to avoid compression.
+
 
 
 ### Amp it up
@@ -256,6 +274,7 @@ sleep 0.25
 play 62, amp: 1
 ```
 
+
 ### Panning
 
 Another fun opt to use is `pan:` which controls the panning of a
@@ -287,6 +306,7 @@ play 60, pan: 0
 
 Now, go and have fun changing the amplitude and panning of your sounds!
 
+
 ## Switching Synths
 
 So far we've had quite a lot of fun making beeps. However, you're
@@ -294,6 +314,7 @@ probably starting to get bored of the basic beep noise. Is that all
 Sonic Pi has to offer? Surely there's more to live coding than just
 playing beeps? Yes there is, and in this section we'll explore some of
 the exciting range of sounds that Sonic Pi has to offer.
+
 
 ### Synths
 
@@ -304,6 +325,7 @@ control them (which we'll explore later in this tutorial). Sonic Pi's
 synths are very powerful and expressive and you'll have a lot of fun
 exploring and playing with them. First, let's learn how to select the
 current synth to use.
+
 
 ### Buzzy saws and prophets
 
@@ -359,6 +381,7 @@ whatever synth it's currently pointing to. You can move the switch to a
 new synth with `use_synth`.
 
 
+
 ### Discovering Synths
 
 To see which synths Sonic Pi has for you to play with take a look at the
@@ -375,6 +398,7 @@ Now play around with *switching synths during your music*. Have fun
 combining synths to make new sounds as well as using different synths
 for different sections of your music.
 
+
 ## Duration with Envelopes
 
 In an earlier section, we looked at how we can use the `sleep` command
@@ -389,6 +413,7 @@ section). An amplitude envelope offers two useful aspects of control:
 * control over the duration of a sound
 * control over the amplitude of a sound
 
+
 ### Duration
 
 The duration is the length the sound lasts for. A longer duration means
@@ -396,6 +421,7 @@ that you hear the sound for longer. Sonic Pi's sounds all have a
 controllable amplitude envelope, and the total duration of that envelope
 is the duration of the sound. Therefore, by controlling the envelope you
 control the duration.
+
 
 ### Amplitude
 
@@ -413,6 +439,7 @@ Just to recap, as we have seen before, an amplitude of 0 is silence and
 an amplitude of 1 is normal volume.
 
 Now, let us look at each of the parts of the envelopes in turn.
+
 
 ### Release Phase
 
@@ -463,6 +490,7 @@ fade outs.*
 You can therefore change the duration of your sound by changing the
 release time. Have a play adding release times to your music.
 
+
 ### Attack Phase
 
 By default, the *attack phase* is 0 for all synths which means they move
@@ -506,6 +534,7 @@ play 60, attack: 0.5, release: 0.5
 
 ![short attack short release envelope](./img/env-short-attack-short-release.png)
 
+
 ### Sustain Phase
 
 In addition to specifying attack and release times, you may also specify
@@ -526,6 +555,7 @@ to 0 and just use the sustain to have absolutely no fade in or fade out
 to the sound. However, be warned, a release of 0 can produce clicks in
 the audio and it's often better to use a very small value such as 0.2.
 
+
 ### Decay Phase
 
 For an extra level of control, you can also specify a decay time. This
@@ -541,6 +571,7 @@ play 60, attack: 0.1, attack_level: 1, decay: 0.2, sustain_level: 0.4, sustain: 
 ```
 
 ![ADSR envelope](./img/env-attack-decay-sustain-release.png)
+
 
 ### Decay Level
 
@@ -562,6 +593,7 @@ play 60, attack: 0.1, attack_level: 0.1, decay: 0.2, decay_level: 1, sustain: 0.
 ```
 
 ![ASR envelope](./img/env-decay-level-2.png)
+
 
 ### ADSR Envelopes
 
